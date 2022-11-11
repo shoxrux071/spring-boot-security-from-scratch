@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import javax.security.auth.Subject;
 import java.util.Collection;
@@ -16,22 +17,25 @@ import java.util.Collection;
  * spring-secutiy-from-scratch/IntelliJ IDEA
  */
 @RequiredArgsConstructor
-@Getter
-@Setter
 public class ApiKeyAuthentication implements Authentication {
 
     private final String key;
-
     private boolean authenticated;
+
     @Override
     public boolean isAuthenticated() {
         return authenticated;
     }
 
     @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-      this.authenticated=isAuthenticated;
+    public void setAuthenticated(boolean authenticated) throws IllegalArgumentException {
+        this.authenticated = authenticated;
     }
+
+    public String getKey() {
+        return key;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -52,15 +56,13 @@ public class ApiKeyAuthentication implements Authentication {
         return null;
     }
 
-
+    @Override
+    public boolean implies(Subject subject) {
+        return Authentication.super.implies(subject);
+    }
 
     @Override
     public String getName() {
         return null;
-    }
-
-    @Override
-    public boolean implies(Subject subject) {
-        return Authentication.super.implies(subject);
     }
 }
